@@ -1,6 +1,6 @@
 import unittest
 
-from markdown_utils import extract_markdown_images, extract_markdown_links
+from markdown_utils import extract_markdown_images, extract_markdown_links, markdown_to_blocks
 
 class TestMarkdownUtils(unittest.TestCase):
     def test_extract_markdown_images(self):
@@ -18,3 +18,21 @@ class TestMarkdownUtils(unittest.TestCase):
     def test_extract_markdown_links_without_links(self):
         matches = extract_markdown_links("This is text without a link")
         self.assertListEqual([], matches)
+
+    def test_markdown_to_blocks(self):
+        markdown = """# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item"""
+        result = markdown_to_blocks(markdown)
+        self.assertListEqual(
+            [
+                "# This is a heading",
+                "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+                "* This is the first list item in a list block\n* This is a list item\n* This is another list item",
+            ],
+            result
+        )

@@ -1,6 +1,7 @@
 import unittest
 
-from markdown_utils import extract_markdown_images, extract_markdown_links, markdown_to_blocks
+from textnode import BlockType
+from markdown_utils import extract_markdown_images, extract_markdown_links, markdown_to_blocks, block_to_block_type
 
 class TestMarkdownUtils(unittest.TestCase):
     def test_extract_markdown_images(self):
@@ -36,3 +37,17 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
             ],
             result
         )
+
+    def test_block_to_block_type(self):
+        block = "# Heading"
+        self.assertEqual(block_to_block_type(block), BlockType.HEADING)
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
+        block = "> Quote\n> Another quote"
+        self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
+        block = "- List\n- List"
+        self.assertEqual(block_to_block_type(block), BlockType.UNORDERED_LIST)
+        block = "1. List\n2. List"
+        self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
+        block = "Paragraph"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)

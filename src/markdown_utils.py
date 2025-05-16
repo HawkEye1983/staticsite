@@ -114,7 +114,7 @@ def unordered_to_html_node(block):
 def quote_to_html_node(block):
     lines = block.split("\n")
     new_lines = []
-    for lin in lines:
+    for line in lines:
         if not line.startswith(">"):
             raise ValueError("Invalid quote block.")
         new_lines.append(line.lstrip(">").strip())

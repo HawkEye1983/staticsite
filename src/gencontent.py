@@ -2,17 +2,17 @@ import os
 from markdown_utils import markdown_to_html_node
 from pathlib import Path
 
-def generate_pages(dir_path_content, template_path, destination_dir_path, base):
+def generate_pages(dir_path_content, template_path, destination_dir_path, basepath):
     for filename in os.listdir(dir_path_content):
         from_path = os.path.join(dir_path_content, filename)
         destination_path = os.path.join(destination_dir_path, filename)
         if os.path.isfile(from_path):
             destination_path = Path(destination_path).with_suffix(".html")
-            generate_page(from_path, template_path, destination_path, base)
+            generate_page(from_path, template_path, destination_path, basepath)
         else:
-            generate_pages(from_path, template_path, destination_path, base)
+            generate_pages(from_path, template_path, destination_path, basepath)
 
-def generate_page(from_path, template_path, destination_path, base):
+def generate_page(from_path, template_path, destination_path, basepath):
     print(f" * {from_path} {template_path} -> {destination_path}")
     from_file = open(from_path, "r")
     markdown_content = from_file.read()
@@ -25,8 +25,8 @@ def generate_page(from_path, template_path, destination_path, base):
     title = extract_title(markdown_content)
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
-    template = template.replace('href="/', 'href="' + base)
-    template = template.replace('src="/', 'src="', + base)
+    template = template.replace('href="/', 'href="' + basepath)
+    template = template.replace('src="/', 'src="' + basepath)
     destination_dir_path = os.path.dirname(destination_path)
     if destination_dir_path != "":
         os.makedirs(destination_dir_path, exist_ok=True)

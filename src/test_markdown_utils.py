@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import BlockType
-from markdown_utils import extract_markdown_images, extract_markdown_links, markdown_to_blocks, block_to_block_type
+from markdown_utils import extract_markdown_images, extract_markdown_links, markdown_to_blocks, block_to_block_type, markdown_to_html_node
 
 class TestMarkdownUtils(unittest.TestCase):
     def test_extract_markdown_images(self):
@@ -51,3 +51,34 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
         block = "Paragraph"
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+class TestBlockMarkdown(unittest.TestCase):
+    def test_paragraph(self):
+        md = """
+This is a **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with *italic* text and `code` here
+
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is a <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_codeblock(self):
+        md = """
+```
+This is text that *should* remain
+the **same** even with inline stuff
+```
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that *should* remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
